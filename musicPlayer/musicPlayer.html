@@ -42,7 +42,7 @@
 
     <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
 
-    <audio id="audio" src=""></audio>
+    <audio id="audio" src="./asset/music/Cheap_Thrills_Sia.mp3"></audio>
   </div>
 
   <!-- Playlist -->
@@ -88,7 +88,7 @@
     /**
      * 1. Render Songs => OK
      * 2. Handle scroll => OK
-     * 3. Play, pase button => OK
+     * 3. Play, pause button => OK
      * 4. CD rotage => OK
      * 5. Next/previous => OK
      * 6. Random button => OK
@@ -97,7 +97,7 @@
      * 9. Play song when click
     */
     var app = {
-      
+    
     currentIndex : 0, 
     songs:[
         {
@@ -122,7 +122,7 @@
             name: 'Cheap Thrills',
             singer: 'Sia',
             image: './asset/img/img0.jpg',
-            path: 'http://webcoban.vn/file/bell.mp3'
+            path: './asset/music/Cheap_Thrills_Sia.mp3'
         },
         {
             name: 'Love me like you do',
@@ -157,6 +157,8 @@
         document.querySelector('.playlist').innerHTML = htmls.join('')
     },
 
+
+
     handleEvents: function() {
         var cd = document.querySelector('.cd')
         var cdWidth = cd.offsetWidth;
@@ -177,20 +179,23 @@
         var player = document.querySelector('.player')
         var audio = document.querySelector('#audio')
         playBtn.onclick = function() {
-            
             if(player.classList == ('player playing')){
                 player.classList.remove('playing')
                 audio.pause()
                 cdThumbAnimate.pause()
             }
             else{
+              function getCurrentSongPath() {
+                return app.songs[app.currentIndex].path
+              }
                 player.classList.add('playing')
+                audio.src = getCurrentSongPath()
                 audio.play()
+                //console.log(audio.src)
                 cdThumbAnimate.play()
             }
 
         }
-        
         
         // Xu ly cd quay/dung
         var cdThumb = document.querySelector('.cd-thumb')
@@ -203,6 +208,7 @@
         cdThumbAnimate.pause()
     },
     
+
 
     getCurrentSong: function() {
         return this.songs[this.currentIndex]
@@ -221,6 +227,7 @@
 
     // Xử lí next bài hát
     nextSong: function() {
+        var player = document.querySelector('.player')
         var nextBtn = document.querySelector('.btn-next')
         var randomBtn = document.querySelector('.btn-random')
         var focusSongInList = document.querySelectorAll('.song')
@@ -235,6 +242,7 @@
             }
             app.loadCurrentSong()
           }
+          
 
           // Xử lí hiển thị bài hát đang phát
           focusSongInList.forEach(function(song) {
@@ -263,6 +271,7 @@
             if(app.currentIndex < 0) {
                 app.currentIndex = app.songs.length -1
             }
+            
             app.loadCurrentSong()
           }
 
@@ -315,7 +324,8 @@
     },
 
     clickPlayList: function() {
-      const playlist = $(".playlist");
+      var player = document.querySelector('.player')
+      const playlist = document.querySelector(".playlist");
         playlist.onclick = function (e) {
           const songNode = e.target.closest(".song:not(.active)");
 
@@ -326,7 +336,12 @@
               app.currentIndex = Number(songNode.dataset.index);
               app.loadCurrentSong();
               app.render();
-              audio.play();
+              function getCurrentSongPath() {
+                return app.songs[app.currentIndex].path
+              }
+                player.classList.add('playing')
+                audio.src = getCurrentSongPath()
+                audio.play()
             }
 
             // Xử lý khi click vào song option
